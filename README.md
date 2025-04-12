@@ -58,7 +58,7 @@ gemini-api-key-manager/
 
 1.  **Clone the repository:**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/ADT109119/gemini-api-key-manager
     cd gemini-api-key-manager
     ```
 2.  **Install dependencies:**

@@ -60,7 +60,7 @@ gemini-api-key-manager/
 
 1.  **克隆儲存庫：**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/ADT109119/gemini-api-key-manager
     cd gemini-api-key-manager
     ```
 2.  **安裝依賴：**
