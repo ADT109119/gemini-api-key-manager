@@ -1,0 +1,68 @@
+# Gemini API Key Manager - Development Plan
+
+## 1. Technology Stack
+
+*   **Backend:** Node.js with Express.js
+*   **Frontend (Admin UI):** HTML, CSS, Vanilla JavaScript (served statically)
+*   **Data Persistence:** JSON file (`data/tokens.json`), auto-initialized, path configurable via `DATA_PATH` env var.
+
+## 2. Key Features
+
+*   **RESTful API:**
+    *   `/api/keys`: CRUD, batch operations (add, delete, export), status checks.
+    *   `/proxy/google`: Proxy Google GenAI API requests.
+    *   `/proxy/openai`: Proxy OpenAI API requests.
+*   **Load Balancing:** Round-robin or LRU strategy for token selection. Skip temporarily invalid keys.
+*   **Proxying:** Handle standard and streaming (SSE) responses, log details.
+*   **Admin UI:** View, add, delete, check keys. Batch operations, pagination. Served from `/`.
+*   **Proxy Test Tool:** Script (`npm run test:proxy`) or API endpoint (`/api/test-proxy`) for connectivity checks.
+*   **Dockerization:** `Dockerfile` and optional `docker-compose.yml` for easy deployment and volume management.
+*   **Configuration:** Environment variables (`PORT`, `DATA_PATH`, `LOG_LEVEL`, etc.) with `.env` support.
+*   **Logging:** Console logging for API, proxy, and errors.
+
+## 3. Project Structure
+
+```
+gemini-token-manager/
+├── .clinerules         # This plan
+├── .env                # Environment variables (optional)
+├── .gitignore
+├── Dockerfile
+├── docker-compose.yml  # Optional
+├── package.json
+├── package-lock.json
+├── data/               # Data persistence (mounted volume)
+│   └── tokens.json     # Stores API keys and status
+├── docs/               # Documentation and examples
+│   └── examples.md
+├── public/             # Static frontend files
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+├── src/                # Backend source code
+│   ├── server.js       # Main Express server setup
+│   ├── api.js          # API route handlers
+│   ├── proxy.js        # Proxy logic handlers
+│   ├── tokenStore.js   # Logic for reading/writing tokens.json
+│   ├── config.js       # Configuration loading
+│   └── logger.js       # Logging utility
+└── tests/              # Test files (optional)
+    └── proxyTest.js    # Proxy test tool implementation
+```
+
+## 4. Development Steps
+
+1.  **Initialize Project:** `npm init -y`, create `.gitignore`.
+2.  **Install Dependencies:** `npm install express dotenv node-fetch` (add others as needed, e.g., `cors`, logging library).
+3.  **Create Structure:** Create directories (`src`, `public`, `data`, `docs`, `tests`).
+4.  **Config & Logging:** Implement `src/config.js` and `src/logger.js`.
+5.  **Token Storage:** Implement `src/tokenStore.js` (read, write, initialize `data/tokens.json`).
+6.  **Basic Server:** Set up `src/server.js` with Express, basic middleware (JSON parsing, CORS if needed), load config.
+7.  **API Endpoints:** Implement key management routes in `src/api.js` (CRUD, batch).
+8.  **Admin UI:** Create basic `public/index.html`, `style.css`, `script.js` for viewing/adding keys.
+9.  **Proxy Logic:** Implement `src/proxy.js` for Google and OpenAI, including SSE handling and token selection/rotation. Integrate into `server.js`.
+10. **Enhance UI:** Add batch operations, status checks, pagination to the Admin UI.
+11. **Proxy Test Tool:** Implement the test script/endpoint (`tests/proxyTest.js` or within `src/api.js`).
+12. **Dockerization:** Create `Dockerfile` and `docker-compose.yml`. Test build and persistence.
+13. **Examples & Docs:** Write `docs/examples.md`.
+14. **Refinement:** Add error handling, improve logging, finalize tests.

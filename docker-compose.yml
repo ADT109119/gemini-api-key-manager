@@ -1,0 +1,31 @@
+version: '3.8' # Specify compose file version
+
+services:
+  gemini-api-key-manager:
+    build: . # Build the image from the Dockerfile in the current directory
+    container_name: gemini-api-key-manager # Optional: specify a container name
+    ports:
+      - "3000:3000" # Map host port 3000 to container port 3000 (or use ${PORT:-3000}:${PORT:-3000})
+    volumes:
+      # Mount the local './data' directory to '/app/data' in the container
+      # This ensures tokens.json is persisted on the host machine
+      - ./data:/app/data
+      # Alternatively, use a named volume for Docker to manage:
+      # - token_data:/app/data
+    environment:
+      # You can override environment variables here or use an .env file
+      - NODE_ENV=production
+      - PORT=3000
+      - DATA_PATH=/app/data/tokens.json # Ensure this matches the path inside the container
+      # - LOG_LEVEL=debug # Example: uncomment to set log level
+    restart: unless-stopped # Optional: Restart policy
+    healthcheck: # Replicate healthcheck from Dockerfile for Compose awareness
+        test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
+        interval: 30s
+        timeout: 5s
+        retries: 3
+        start_period: 10s
+
+# Optional: Define the named volume if you chose that approach above
+# volumes:
+#   token_data:

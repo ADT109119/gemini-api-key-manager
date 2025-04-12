@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API Key Manager</title>
+    <!-- Link to Tailwind Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Optional: Configure Tailwind JIT if needed
+        tailwind.config = {
+          theme: {
+            extend: {
+              // Add custom theme extensions if desired
+            }
+          }
+        }
+      </script>
+      <style type="text/tailwindcss">
+        /* Base styles for status badges */
+        .status-badge {
+            @apply inline-block px-2 py-0.5 rounded-full text-xs font-medium;
+        }
+        /* Specific status colors */
+        .status-valid { @apply bg-green-100 text-green-700; }
+        .status-invalid { @apply bg-red-100 text-red-700; }
+        .status-unknown { @apply bg-yellow-100 text-yellow-700; }
+        .status-rate_limited { @apply bg-purple-100 text-purple-700; }
+        .status-error_network { @apply bg-red-200 text-red-800; }
+        .status-error_401, .status-error_403, .status-error_429, .status-error_500, .status-error_502, .status-error_503 {
+             @apply bg-red-100 text-red-700;
+        }
+        /* Style disabled buttons */
+        button:disabled {
+            @apply opacity-60 cursor-not-allowed;
+        }
+      </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans p-6">
+    <h1 class="text-3xl font-bold text-blue-700 mb-8 text-center">Gemini API Key Manager</h1>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Add Token Form -->
+        <div class="md:col-span-1 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold text-blue-600 mb-4">Add New Token</h2>
+            <form id="add-token-form" class="space-y-4">
+                <div>
+                    <label for="token-name" class="block text-sm font-medium text-gray-700 mb-1">Name (Optional):</label>
+                    <input type="text" id="token-name" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="token-key" class="block text-sm font-medium text-gray-700 mb-1">API Key:</label>
+                    <input type="text" id="token-key" name="key" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="token-type" class="block text-sm font-medium text-gray-700 mb-1">Type:</label>
+                    <select id="token-type" name="type" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white">
+                        <option value="google">Google Gemini</option>
+                        <option value="openai">OpenAI</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Add Token</button>
+            </form>
+            <p id="add-status" class="mt-3 text-sm italic h-5"></p> <!-- Added height to prevent layout shift -->
+        </div>
+
+        <!-- Manage Tokens Table -->
+        <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold text-blue-600 mb-4">Manage Tokens</h2>
+            <div id="toolbar" class="mb-4 p-3 bg-gray-100 rounded-md flex flex-wrap items-center gap-3 text-sm">
+                 <button id="refresh-tokens" class="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500">Refresh</button>
+                 <label class="flex items-center space-x-2" title="Select/Deselect All" hidden>
+                    <input type="checkbox" id="select-all-tokens" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" hidden>
+                    <span hidden>All</span>
+                 </label>
+                 <button id="delete-selected-btn" disabled class="px-3 py-1.5 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-500">Delete Selected</button>
+                 <button id="check-selected-btn" disabled class="px-3 py-1.5 bg-yellow-500 text-white rounded hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-yellow-500">Check Selected</button>
+                 <!-- <button id="export-selected-btn" disabled class="px-3 py-1.5 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-500">Export Selected</button> -->
+            </div>
+            <div class="overflow-x-auto">
+                <table id="tokens-table" class="min-w-full divide-y divide-gray-200 border border-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-center w-10"><input type="checkbox" id="header-select-all" title="Select/Deselect All on Page" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"></th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Key (Partial)</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Checked</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Used</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tokens-tbody" class="bg-white divide-y divide-gray-200">
+                        <!-- Token rows will be inserted here by JavaScript -->
+                        <!-- Example Row Structure (for reference):
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-2 text-center"><input type="checkbox" class="token-select h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" data-id="123"></td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">My OpenAI Key</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500 font-mono">sk-1...fG8</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">openai</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm"><span class="status-valid">valid</span></td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">2025-04-03 10:00:00</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">2025-04-03 11:30:00</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm space-x-2">
+                                <button class="check-btn px-2 py-1 bg-yellow-500 text-white text-xs rounded hover:bg-yellow-600 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-yellow-500" data-id="123" data-type="openai">Check</button>
+                                <button class="delete-btn px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-red-500" data-id="123" data-name="My OpenAI Key">Delete</button>
+                            </td>
+                        </tr>
+                         -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="pagination-controls" class="mt-4 p-3 bg-gray-100 rounded-md flex flex-wrap justify-between items-center text-sm gap-4">
+                <div class="flex items-center space-x-2">
+                    <button id="prev-page" disabled class="px-3 py-1.5 bg-gray-300 text-gray-600 rounded hover:bg-gray-400 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-400">< Previous</button>
+                    <span id="page-info" class="font-medium text-gray-700">Page 1 of 1</span>
+                    <button id="next-page" disabled class="px-3 py-1.5 bg-gray-300 text-gray-600 rounded hover:bg-gray-400 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-400">Next ></button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <select id="items-per-page" class="px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white">
+                        <option value="10">10</option>
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span class="text-gray-700">items per page</span>
+                </div>
+            </div>
+            <p id="list-status" class="mt-3 text-sm italic h-5"></p> <!-- Added height -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
