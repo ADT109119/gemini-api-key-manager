@@ -3,7 +3,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-繁體中文 | [English](README.md)
+繁體中文 | [English](README.en-US.md)
 
 ![](image/pic.png)
 
@@ -152,6 +152,21 @@ gemini-api-key-manager/
     docker-compose down
     ```
     *(請確保 `docker-compose.yml` 配置正確，特別是磁碟區路徑和服務名稱。)*
+
+### 使用預先建置的 Docker 映像檔
+
+您也可以直接使用我在 Docker Hub 上提供的預先建置映像檔來快速啟動應用程式。
+
+[![Docker Image Size (tag)](https://img.shields.io/docker/image-size/adt109119/gemini-api-key-manager/latest)](https://hub.docker.com/r/adt109119/gemini-api-key-manager)
+
+```bash
+# 拉取最新映像檔
+docker pull adt109119/gemini-api-key-manager:latest
+
+# 運行容器（與上面自行建置的範例類似，但使用預先建置的映像檔名稱）
+docker run -p 3000:3000 -v $(pwd)/data:/app/data --env-file .env -d --name gemini-api-key-manager adt109119/gemini-api-key-manager:latest
+```
+*   請確保根據您的環境調整磁碟區掛載路徑 (`$(pwd)/data`) 和 `.env` 檔案路徑。
 
 ### 貢獻
 

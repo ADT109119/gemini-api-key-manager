@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[繁體中文](README.zh-TW.md) | English
+[繁體中文](README.md) | English
 
 ![](image/pic.png)
 
@@ -150,6 +150,21 @@ Alternatively, use Docker Compose:
     docker-compose down
     ```
     *(Ensure `docker-compose.yml` is configured correctly, especially volume paths and service names.)*
+
+### Using the Pre-built Docker Image
+
+You can also quickly start the application using the pre-built image available on Docker Hub.
+
+[![Docker Image Size (tag)](https://img.shields.io/docker/image-size/adt109119/gemini-api-key-manager/latest)](https://hub.docker.com/r/adt109119/gemini-api-key-manager)
+
+```bash
+# Pull the latest image
+docker pull adt109119/gemini-api-key-manager:latest
+
+# Run the container (similar to the self-built example, but using the pre-built image name)
+docker run -p 3000:3000 -v $(pwd)/data:/app/data --env-file .env -d --name gemini-api-key-manager adt109119/gemini-api-key-manager:latest
+```
+*   Make sure to adjust the volume mount path (`$(pwd)/data`) and the `.env` file path according to your environment.
 
 ### Contributing
 
