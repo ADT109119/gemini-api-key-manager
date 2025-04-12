@@ -41,12 +41,12 @@ EXPOSE 3000
 # Define environment variables (defaults, can be overridden)
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV DATA_PATH=/app/data/tokens.json # Use path inside the container
+ENV DATA_PATH="/app/data/tokens.json" # Use path inside the container
 # Add other ENV vars as needed (e.g., LOG_LEVEL)
 
 # Command to run the application
 # Use node directly to run the server script
-CMD ["node", "src/server.js"]
+CMD ["npm", "start"]
 
 # Healthcheck (Optional but recommended)
 # Checks if the server is responding on the health endpoint
