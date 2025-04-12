@@ -170,7 +170,7 @@ docker run -p 3000:3000 -v $(pwd)/data:/app/data --env-file .env -d --name gemin
 
 ## 貢獻
 
-歡迎貢獻！請隨時提交 Pull Request 或開啟 Issue。（如果需要，可添加具體的貢獻指南）。
+歡迎貢獻！請隨時提交 Pull Request 或開啟 Issue。
 
 ## 授權
 

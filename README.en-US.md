@@ -168,7 +168,7 @@ docker run -p 3000:3000 -v $(pwd)/data:/app/data --env-file .env -d --name gemin
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit Pull Requests or open Issues. (Add specific contribution guidelines if desired).
+Contributions are welcome! Please feel free to submit Pull Requests or open Issues.
 
 ## License
 
