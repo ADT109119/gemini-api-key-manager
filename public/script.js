@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
             row.innerHTML = `
                 <td class="px-4 py-2 text-center align-middle"><input type="checkbox" class="token-select h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" data-id="${token.id}" ${isSelected ? 'checked' : ''}></td>
                 <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 align-middle">${token.name || 'N/A'}</td>
-                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500 font-mono align-middle">${formatKey(token.key)}</td>
+                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500 font-mono align-middle">${token.key}</td>
                 <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500 align-middle">${token.type}</td>
                 <td class="px-4 py-2 whitespace-nowrap text-sm align-middle">${renderStatus(token.status)}</td>
                 <td class="px-4 py-2 whitespace-nowrap text-xs text-gray-500 align-middle">${formatDate(token.lastChecked)}</td> 

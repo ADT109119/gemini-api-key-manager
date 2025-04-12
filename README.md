@@ -13,6 +13,8 @@
 
 Gemini API 金鑰管理器是一個 Node.js 應用程式，旨在管理和代理 Google Gemini 與 OpenAI 服務的 API 金鑰。它提供了一個 RESTful API 用於金鑰管理，透過負載平衡將請求分發到多個金鑰，並提供一個簡單的網頁管理介面。它也支援代理標準和串流 (Server-Sent Events) API 請求。
 
+**⚠️ 重要警告：本專案無資安防護相關之措施，請僅在本機環境運行。請勿將其部署到公開網路或不受信任的環境中。⚠️**
+
 ![介面demo圖片](image/image.png)
 
 ### 功能特色

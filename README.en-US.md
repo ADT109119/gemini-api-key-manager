@@ -12,6 +12,8 @@
 
 Gemini API Key Manager is a Node.js application designed to manage and proxy API keys for Google Gemini and OpenAI services. It provides a RESTful API for key management, load balancing to distribute requests across multiple keys, and a simple web-based admin interface. It also supports proxying standard and streaming (Server-Sent Events) API requests.
 
+**⚠️ Important Warning: This project does not include security measures. Please run it only in a local environment. Do not deploy it to public networks or untrusted environments. ⚠️**
+
 ![demo](image/image.png)
 
 ### Features

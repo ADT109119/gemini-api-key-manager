@@ -8,10 +8,19 @@ const router = express.Router();
 
 // --- Token CRUD Operations ---
 
+const formatKey = (key) => {
+  if (!key || key.length < 8) return key;
+  return `${key.substring(0, 4)}...${key.substring(key.length - 4)}`;
+};
+
+
 // GET /api/keys - Get all tokens
 router.get('/keys', (req, res) => {
   try {
     const tokens = tokenStore.getAllTokens();
+    tokens.forEach(token => {
+      token.key = formatKey(token.key); // Remove sensitive data
+    });
     res.status(200).json(tokens);
   } catch (error) {
     logger.error('Error getting all tokens:', error);
