@@ -166,10 +166,10 @@ docker run -p 3000:3000 -v $(pwd)/data:/app/data --env-file .env -d --name gemin
 ```
 *   Make sure to adjust the volume mount path (`$(pwd)/data`) and the `.env` file path according to your environment.
 
-### Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit Pull Requests or open Issues. (Add specific contribution guidelines if desired).
 
-### License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

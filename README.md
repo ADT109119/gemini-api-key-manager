@@ -168,10 +168,10 @@ docker run -p 3000:3000 -v $(pwd)/data:/app/data --env-file .env -d --name gemin
 ```
 *   請確保根據您的環境調整磁碟區掛載路徑 (`$(pwd)/data`) 和 `.env` 檔案路徑。
 
-### 貢獻
+## 貢獻
 
 歡迎貢獻！請隨時提交 Pull Request 或開啟 Issue。（如果需要，可添加具體的貢獻指南）。
 
-### 授權
+## 授權
 
 本專案採用 MIT 授權 - 詳情請參閱 [LICENSE](LICENSE) 檔案。
